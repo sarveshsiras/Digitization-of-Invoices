@@ -9,7 +9,7 @@ except ImportError:
 import pytesseract
 
 
-image_path = "../input_imgs/org_invoice.png"
+image_path = "4.jpg"
 
 detected_table,returned_coordinates = api_result.get_table(image_path)
 no_table_img = api_result.get_image(image_path,returned_coordinates)
@@ -23,6 +23,6 @@ contours.sort(key=lambda x: table_processing.get_contour_precedence(x,processed_
 rectangle_list,text_data = text_extraction.get_text(contours,border_image)
 print(text_data)
 # ---------------------------------------------------------------------------------------------------------
-
+print('----------------------Non-Tabular-Data----------------------')
 text = pytesseract.image_to_string(no_table_img, config="--oem 1 --psm 4")
 print(text)

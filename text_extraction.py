@@ -26,14 +26,14 @@ def get_text(contours,border_image):
             text = pytesseract.image_to_string(rect_img, config="--oem 1 --psm 6")
             if len(text) == 1:
                 text = pytesseract.image_to_string(rect_img, config="--oem 1 --psm 4")
-                print("-----------------INSIDE------------------")
+                # print("-----------------INSIDE------------------")
 
             print(text)
             # print(l)
             #print("---------------------------------------------")
             text_data.append(text)
-            cv2.imshow("RESULT", border_image)
-            cv2.waitKey(0)
+            # cv2.imshow("RESULT", border_image)
+            # cv2.waitKey(0)
             # fig.add_subplot(rows, columns, plot_num)
             plot_num = plot_num + 1
             # plt.imshow(rect_img)

@@ -4,9 +4,13 @@ from PIL import Image
 from server_request import dispatch_request
 
 def get_table(img_path):
-    returned_coordinates = dispatch_request("NGROK_URL", img_path)
+    returned_coordinates = dispatch_request("http://df785f8cb9c2.ngrok.io/", img_path)
     print(returned_coordinates)
     img = Image.open(img_path)
+    oimg = cv2.imread(img_path)
+    cv2.rectangle(oimg, (int(returned_coordinates[0]), int(returned_coordinates[1])), (int(returned_coordinates[2]), int(returned_coordinates[3])), (0, 255, 0), 3)
+    cv2.imshow('detected table', oimg)
+    cv2.waitKey()
     cropped_image = img.crop(returned_coordinates)
     open_cv_image = np.array(cropped_image)
     # Convert RGB to BGR

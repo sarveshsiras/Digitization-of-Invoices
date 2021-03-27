@@ -34,13 +34,13 @@ def get_contours(thresh,detected_table):
     for c in cnts:
         cv2.drawContours(detected_table, [c], -1, (36, 255, 12), 2)
 
-    cv2.imshow('Drawing_1', detected_table)
-    cv2.waitKey()
-    #cv2.imwrite("Detected_table.jpg",detected_table)
 
     img_vh = cv2.addWeighted(detect_vertical, 0.5, detect_horizontal, 0.5, 0.0)
     cv2.imshow('Drawing', img_vh)
     cv2.waitKey()
+    cv2.imshow('Drawing_1', detected_table)
+    cv2.waitKey()
+    #cv2.imwrite("Detected_table.jpg",detected_table)
 
     contours, hierarchy = cv2.findContours(img_vh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     print(len(contours))
