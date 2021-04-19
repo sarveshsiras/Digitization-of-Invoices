@@ -4,7 +4,8 @@ from PIL import Image
 from server_request import dispatch_request
 
 def get_table(img_path):
-    returned_coordinates = dispatch_request("http://df785f8cb9c2.ngrok.io/", img_path)
+    print("Start the process")
+    returned_coordinates = dispatch_request("DEPLOYED_MODEL_URL", img_path)
     print(returned_coordinates)
     img = Image.open(img_path)
     oimg = cv2.imread(img_path)
@@ -12,7 +13,9 @@ def get_table(img_path):
     cv2.imshow('detected table', oimg)
     cv2.waitKey()
     cropped_image = img.crop(returned_coordinates)
-    open_cv_image = np.array(cropped_image)
+    #open_cv_image = np.array(cropped_image)
+    cropped_image.save("sample.png")
+    open_cv_image = cv2.imread("sample.png")
     # Convert RGB to BGR
     # open_cv_image = open_cv_image[:, :, ::-1].copy()
     #open_cv_image = cv2.imread(img_path)
@@ -24,8 +27,6 @@ def get_image(img_path,returned_coordinates):
     x2_coordinate = int(returned_coordinates[2])
     y2_coordinate = int(returned_coordinates[3])
     img = cv2.imread(img_path)
-    img[y1_coordinate:y2_coordinate, x1_coordinate:x2_coordinate] = [255,255,255]
-    cv2.imwrite("Cropped_invoice.png",img)
     return img
 
 
