@@ -24,11 +24,13 @@ contours.sort(key=lambda x: table_processing.get_contour_precedence(x,processed_
 bounding_rects = cell_extraction.get_text(contours)
 cell_images_rows = output_cell_grouping.group_output(bounding_rects, table_image)
 text_data = output_cell_grouping.process_text(cell_images_rows)
-print("Grouped Tabular Information")
+print("--- Grouped Tabular Information ---")
 print(text_data)
 
 
 # ---------------------------------------------------------------------------------------------------------
-print('Non-Tabular-Data')
+print('--- Non-Tabular-Data ---')
 text = pytesseract.image_to_string(no_table_img, config="--oem 1 --psm 4")
-print(text)
+print(repr(text))
+result_text = text.split("\n")
+print(result_text)
