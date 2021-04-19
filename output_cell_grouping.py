@@ -9,12 +9,9 @@ def cell_in_same_row(c1, c2):
 
 def group_output(bounding_rects,image):
     print("Start grouping the rows")
-    #print(type(bounding_rects[-1][0]))
-    #print(bounding_rects[-1][0])
     if(bounding_rects[-1][0] == 0 and bounding_rects[-1][0] == 0):
         bounding_rects.pop()
     largest_rect = max(bounding_rects, key=lambda r: r[2] * r[3])
-    #print(largest_rect)
     bounding_rects = [b for b in bounding_rects if b is not largest_rect]
     cells = [c for c in bounding_rects]
     orig_cells = [c for c in cells]
