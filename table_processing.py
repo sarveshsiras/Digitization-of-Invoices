@@ -15,36 +15,24 @@ def get_contours(thresh,detected_table):
 
     horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (60, 1))
     detect_horizontal = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=1)
-    cv2.imshow('result', detect_horizontal)
-    cv2.waitKey()
     cnts = cv2.findContours(detect_horizontal, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-    print("Vertical", len(cnts))
     for c in cnts:
         cv2.drawContours(detected_table, [c], -1, (36, 255, 12), 2)
 
     # Detect vertical lines
     vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 10))
     detect_vertical = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, vertical_kernel, iterations=2)
-    cv2.imshow('result', detect_vertical)
-    cv2.waitKey()
     cnts = cv2.findContours(detect_vertical, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-    print("horizantal", len(cnts))
     for c in cnts:
         cv2.drawContours(detected_table, [c], -1, (36, 255, 12), 2)
 
 
     img_vh = cv2.addWeighted(detect_vertical, 0.5, detect_horizontal, 0.5, 0.0)
-    cv2.imshow('Drawing', img_vh)
-    cv2.waitKey()
-    cv2.imshow('Drawing_1', detected_table)
-    cv2.waitKey()
     #cv2.imwrite("Detected_table.jpg",detected_table)
 
     contours, hierarchy = cv2.findContours(img_vh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(len(contours))
-    print(contours)
     return contours
 
 def get_contour_precedence(contour, cols):
