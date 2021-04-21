@@ -10,9 +10,10 @@ except ImportError:
 import pytesseract
 
 
-image_path = "new_invoice.jpeg"
+image_path = "4.jpg"
 
-detected_table,returned_coordinates = api_result.get_table(image_path)
+returned_coordinates = api_result.get_table(image_path)
+detected_table = api_result.crop_image(image_path, returned_coordinates)
 table_image = detected_table.copy()
 no_table_img = api_result.get_image(image_path,returned_coordinates)
 
