@@ -27,6 +27,7 @@ def get_image(img_path,returned_coordinates):
     x2_coordinate = int(returned_coordinates[2])
     y2_coordinate = int(returned_coordinates[3])
     img = cv2.imread(img_path)
+    img[y1_coordinate:y2_coordinate, x1_coordinate:x2_coordinate] = [255,255,255]
     return img
 
 
