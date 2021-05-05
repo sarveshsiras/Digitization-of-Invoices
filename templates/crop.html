@@ -1,0 +1,292 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Profile {% endblock title %}
+
+{% block content %}
+<div id="content">
+<div class="header pb-6 d-flex align-items-center" 
+     style="min-height: 500px; background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-default opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-10 col-md-10">
+        <h4 class="display-2 text-white"> If required, Please resize the detected table</h4>
+        
+        <canvas id="canvas" width="700" height="500" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+        </canvas>
+        <form method=post action="{{ url_for('show') }}">
+          <label class="form-control-label" for="x1">X1</label>
+          <input type="number" name="X1" id="x1" class="form-control" placeholder="X1" value=0 readonly>
+
+          
+          <label class="form-control-label" for="y1">Y1</label>
+          <input type="number" name="Y1" id="y1" class="form-control" placeholder="Y1" value=0 readonly> <!--style="pointer-events: none;background-color:#E9ECEF">-->
+
+          
+          <label class="form-control-label" for="x2">X2</label>
+          <input type="number" name="X2" id="x2" class="form-control" placeholder="X2" value=0 readonly>
+
+          
+          <label class="form-control-label" for="y2">Y2</label>
+          <input type="number" name="Y2" id="y2" class="form-control" placeholder="Y2" value=0 readonly>
+          <br>
+          <input class="btn btn-neutral" id="submit" type=submit value=Submit onclick="loading();">
+        </form>
+        <script>
+        window.onload = function() {
+          var c = document.getElementById("canvas");
+          var ctx = c.getContext("2d");
+          var img = new Image();
+          img.src="{{ filename }}"; 
+          // var img = document.getElementById("myimg");
+          var owd = img.width;
+          var oht = img.height;
+          ctx.drawImage(img, 0, 0, 700, 500);
+          clickedArea = findCurrentArea(x1, y1);
+          redraw();
+          $("#x1").val(x1 * owd / 700);
+          $("#y1").val(y1 * oht / 500);
+          $("#x2").val(((x2+1)*owd/700) - 10);
+          $("#y2").val(((y2+1)*oht/500) - 10);
+        } 
+        var lineOffset = 4;
+var anchrSize = 2; 
+var img = new Image();
+img.src="{{ filename }}"; 
+var ow = img.width;
+var oh = img.height;
+var mousedown = false;
+var clickedArea = {box: -1, pos:'o'};
+var x1 = ("{{returned_coordinates[0]}}" * 700 / ow);//4;
+var y1 = ("{{returned_coordinates[1]}}" * 500 / oh);//23;
+var x2 = ((("{{returned_coordinates[2]}}")* 700 / ow) - 1);//65;
+var y2 = ((("{{returned_coordinates[3]}}") * 500 / oh) - 1);//90;
+var counter = 1;
+var boxes = [];
+var tmpBox = null;
+
+document.getElementById("canvas").onmousedown = function(e) {
+  mousedown = true;
+  clickedArea = findCurrentArea(e.offsetX, e.offsetY);
+  x1 = e.offsetX;
+  y1 = e.offsetY;
+  x2 = e.offsetX;
+  y2 = e.offsetY;
+};
+document.getElementById("canvas").onmouseup = function(e) {
+  counter = 0;
+	if (clickedArea.box == -1 && tmpBox != null) {
+  	boxes.push(tmpBox);
+  } else if (clickedArea.box != -1) {
+  	var selectedBox = boxes[clickedArea.box];
+    if (selectedBox.x1 > selectedBox.x2) {
+    	var previousX1 = selectedBox.x1;
+      selectedBox.x1 = selectedBox.x2;
+      selectedBox.x2 = previousX1;
+    }
+    if (selectedBox.y1 > selectedBox.y2) {
+    	var previousY1 = selectedBox.y1;
+      selectedBox.y1 = selectedBox.y2;
+      selectedBox.y2 = previousY1;
+    }
+  }
+  $("#x1").val(boxes[0]["x1"] * (ow / 700));
+  $("#y1").val(boxes[0]["y1"] * (oh / 500));
+  $("#x2").val(((boxes[0]["x2"]+1)*ow/700));
+  $("#y2").val(((boxes[0]["y2"]+1)*oh/500));
+  clickedArea = {box: -1, pos:'o'};
+  tmpBox = null;
+  mousedown = false;
+  console.log(boxes);
+};
+document.getElementById("canvas").onmouseout = function(e) {
+	if (clickedArea.box != -1) {
+  	var selectedBox = boxes[clickedArea.box];
+    if (selectedBox.x1 > selectedBox.x2) {
+    	var previousX1 = selectedBox.x1;
+      selectedBox.x1 = selectedBox.x2;
+      selectedBox.x2 > previousX1;
+    }
+    if (selectedBox.y1 > selectedBox.y2) {
+    	var previousY1 = selectedBox.y1;
+      selectedBox.y1 = selectedBox.y2;
+      selectedBox.y2 > previousY1;
+    }
+  }
+  mousedown = false;
+  clickedArea = {box: -1, pos:'o'};
+  tmpBox = null;
+};
+document.getElementById("canvas").onmousemove = function(e) {
+  if (mousedown && clickedArea.box == -1) {
+    // x2 = e.offsetX;
+    // y2 = e.offsetY;
+    // if(counter > 0)
+    //   redraw();
+  } else if (mousedown && clickedArea.box != -1) {
+    x2 = e.offsetX;
+    y2 = e.offsetY;
+    xOffset = x2 - x1;
+    yOffset = y2 - y1;
+    x1 = x2;
+    y1 = y2;
+
+    if (clickedArea.pos == 'i'  ||
+        clickedArea.pos == 'tl' ||
+        clickedArea.pos == 'l'  ||
+        clickedArea.pos == 'bl') {
+      boxes[clickedArea.box].x1 += xOffset;
+    }
+    if (clickedArea.pos == 'i'  ||
+        clickedArea.pos == 'tl' ||
+        clickedArea.pos == 't'  ||
+        clickedArea.pos == 'tr') {
+      boxes[clickedArea.box].y1 += yOffset;
+    }
+    if (clickedArea.pos == 'i'  ||
+        clickedArea.pos == 'tr' ||
+        clickedArea.pos == 'r'  ||
+        clickedArea.pos == 'br') {
+      boxes[clickedArea.box].x2 += xOffset;
+    }
+    if (clickedArea.pos == 'i'  ||
+        clickedArea.pos == 'bl' ||
+        clickedArea.pos == 'b'  ||
+        clickedArea.pos == 'br') {
+      boxes[clickedArea.box].y2 += yOffset;
+    }
+    redraw();
+  }
+}
+
+function redraw() {
+  // canvas.width = canvas.width;
+  var context = document.getElementById("canvas").getContext('2d');
+  var img = new Image();
+  img.src="{{ filename }}"; 
+  // var img = document.getElementById("myimg");
+  context.clearRect(0, 0, img.width, img.height);
+  context.drawImage(img, 0, 0, 700, 500);
+  context.beginPath();
+  for (var i = 0; i < boxes.length; i++) {
+    drawBoxOn(boxes[i], context);
+  }
+  if (clickedArea.box == -1) {
+    tmpBox = newBox(x1, y1, x2, y2);
+    boxes.push(tmpBox); //this
+    if (tmpBox != null) {
+      drawBoxOn(tmpBox, context);
+    }
+  }
+}
+
+function findCurrentArea(x, y) {
+  for (var i = 0; i < boxes.length; i++) {
+    var box = boxes[i];
+    xCenter = box.x1 + (box.x2 - box.x1) / 2;
+    yCenter = box.y1 + (box.y2 - box.y1) / 2;
+    if (box.x1 - lineOffset <  x && x < box.x1 + lineOffset) {
+      if (box.y1 - lineOffset <  y && y < box.y1 + lineOffset) {
+        return {box: i, pos:'tl'};
+      } else if (box.y2 - lineOffset <  y && y < box.y2 + lineOffset) {
+        return {box: i, pos:'bl'};
+      } else if (yCenter - lineOffset <  y && y < yCenter + lineOffset) {
+        return {box: i, pos:'l'};
+      }
+    } else if (box.x2 - lineOffset < x && x < box.x2 + lineOffset) {
+      if (box.y1 - lineOffset <  y && y < box.y1 + lineOffset) {
+        return {box: i, pos:'tr'};
+      } else if (box.y2 - lineOffset <  y && y < box.y2 + lineOffset) {
+        return {box: i, pos:'br'};
+      } else if (yCenter - lineOffset <  y && y < yCenter + lineOffset) {
+        return {box: i, pos:'r'};
+      }
+    } else if (xCenter - lineOffset <  x && x < xCenter + lineOffset) {
+      if (box.y1 - lineOffset <  y && y < box.y1 + lineOffset) {
+        return {box: i, pos:'t'};
+      } else if (box.y2 - lineOffset <  y && y < box.y2 + lineOffset) {
+        return {box: i, pos:'b'};
+      } else if (box.y1 - lineOffset <  y && y < box.y2 + lineOffset) {
+        return {box: i, pos:'i'};
+      }
+    } else if (box.x1 - lineOffset <  x && x < box.x2 + lineOffset) {
+      if (box.y1 - lineOffset <  y && y < box.y2 + lineOffset) {
+        return {box: i, pos:'i'};
+      }
+    }
+  }
+  return {box: -1, pos:'o'};
+}
+
+function newBox(x1, y1, x2, y2) {
+  boxX1 = x1 < x2 ? x1 : x2;
+  boxY1 = y1 < y2 ? y1 : y2;
+  boxX2 = x1 > x2 ? x1 : x2;
+  boxY2 = y1 > y2 ? y1 : y2;
+  if (boxX2 - boxX1 > lineOffset * 2 && boxY2 - boxY1 > lineOffset * 2) {
+    return {x1: boxX1,
+            y1: boxY1,
+            x2: boxX2,
+            y2: boxY2,
+            lineWidth: 2,
+            color: 'DeepSkyBlue'};
+  } else {
+    return null;
+  }
+}
+
+function drawBoxOn(box, context) {
+  xCenter = box.x1 + (box.x2 - box.x1) / 2;
+  yCenter = box.y1 + (box.y2 - box.y1) / 2;
+
+  context.strokeStyle = box.color;
+  context.fillStyle = box.color;
+
+  context.rect(box.x1, box.y1, (box.x2 - box.x1), (box.y2 - box.y1));
+  context.lineWidth = box.lineWidth;
+  context.stroke();
+
+  context.fillRect(box.x1 - anchrSize, box.y1 - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(box.x1 - anchrSize, yCenter - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(box.x1 - anchrSize, box.y2 - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(xCenter - anchrSize, box.y1 - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(xCenter - anchrSize, yCenter - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(xCenter - anchrSize, box.y2 - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(box.x2 - anchrSize, box.y1 - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(box.x2 - anchrSize, yCenter - anchrSize, 2 * anchrSize, 2 * anchrSize);
+  context.fillRect(box.x2 - anchrSize, box.y2 - anchrSize, 2 * anchrSize, 2 * anchrSize);
+
+}
+
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<center>
+  <div id="loading">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<h2> Please Wait, We are processing your invoice. </h2>
+</div>
+</center>
+<!-- Page content -->
+
+  <script type="text/javascript">
+        function loading(){
+            $("#loading").show();
+            $("#content").hide();       
+        }
+</script>
+<!-- Page content -->
+
+  
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}
