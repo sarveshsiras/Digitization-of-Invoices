@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Profile {% endblock title %}
+
+{% block content %}
+
+<div class="header pb-6 d-flex align-items-center" 
+     style="min-height: 500px; background-image: url(/static/assets/invoice_bg.jpg); background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-default opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+        <h1 class="display-2 text-white">Hello {{ current_user.username }}</h1>
+        <p class="text-white mt-0 mb-5">Please upload your image here.</p>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes style="color: red;">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <form method="post" enctype="multipart/form-data" action="{{url_for('upload_file')}}">
+        <input type="file" name="file1">
+        <br><br>
+        <input type="submit" class="btn btn-neutral" value="Upload File">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% if filename %}
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Uploaded File </h3>
+            </div>
+            <div class="col-4 text-right">
+              <form>
+                <input class="btn btn-neutral" id="button2" type=submit formaction="{{ url_for('get_table') }}" value=Continue>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+         
+          <div>
+            <img src="{{ filename }}" style="width: 300px; height: 300px;">
+          </div>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% include "includes/footer.html" %}
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}
