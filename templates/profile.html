@@ -1,0 +1,159 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Profile {% endblock title %}
+
+{% block content %}
+
+<div class="header pb-6 d-flex align-items-center" 
+     style="min-height: 500px; background-image: url(/static/assets/bg.jpg); background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-default opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+        <h1 class="display-2 text-white">Hello {{ current_user.username }}</h1>
+        <p class="text-white mt-0 mb-5"></p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-4 order-xl-2">
+      <div class="card card-profile">
+        <img src="/static/assets/img/theme/img-1-1000x600.jpg" alt="Image placeholder" class="card-img-top">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <a href="#">
+                <img src="/static/assets/avatar.png" class="rounded-circle">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+        </div>
+        <div class="card-body pt-0">
+          <div class="row">
+            <div class="col">
+              <div class="card-profile-stats d-flex justify-content-center">
+                <div>
+                  <span class="heading">{{Number_of_invoices}}</span>
+                  <span class="description">Number of Invoices Scanned</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <h5 class="h3">
+              {{ current_user.username }}
+            </h5>
+            <div class="h5 font-weight-300">
+              <i class="ni location_pin mr-2"></i>{{ current_user.email }}
+            </div>
+            <div>
+              <i class="ni education_hat mr-2"></i>Invoicer User
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Profile Information</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+            <h6 class="heading-small text-muted mb-4">User information</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Username</label>
+                    <input type="text" id="input-username" class="form-control" placeholder="Username" value="{{ current_user.username }}" readonly>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-email">Email address</label>
+                    <input type="email" id="input-email" class="form-control" placeholder="{{ current_user.email }}" readonly>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4" />
+            <!-- Address -->
+            <a href="#!" class="btn btn-sm btn-primary" style="float: right;" onclick="password_change();">Change Password</a>
+            <h6 class="heading-small text-muted mb-4">Password</h6>
+              
+            <div id = "Password_Change" style="display: none;">
+              <form action="{{url_for('profile')}}" method="POST">
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-address">Enter the new passowrd</label>
+                      <input type ="password" id="input-address-1" class="form-control" placeholder="Password" name="Password_1"><br>
+                      <input type="checkbox" onclick="myFunction1()"> Show Entered Password<br><br>
+                      <label class="form-control-label" for="input-address">Reenter the new passowrd</label>
+                      <input type ="password" id="input-address-2" class="form-control" placeholder="Password" name="Password_2">
+                      
+                      <br><input type="checkbox" onclick="myFunction2()"> Show Reentered Password
+                      <br><br>
+                      <button type="submit" class="btn btn-sm btn-primary" style="float: right;" onclick="password_change();">Save New Password</button>
+    
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+              
+            </div>
+            <hr class="my-4" />
+            <h3 style="color: green;">{{pass_msg_2}}</h3>
+            <h3 style="color: red;">{{pass_msg_1}}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function myFunction1() {
+  var x = document.getElementById("input-address-1");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+}
+function myFunction2() {
+  var x = document.getElementById("input-address-2");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+}
+</script>
+<script>
+function password_change(){
+  var pass_id = document.getElementById("Password_Change");
+  $("#Password_Change").show();
+}
+  </script>
+
+  {% include "includes/footer.html" %}
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}
