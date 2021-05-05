@@ -1,0 +1,144 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Invoice Data</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="#">Invoice Data</a></li>
+            
+              </ol>
+            </nav>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">Invoice</h3>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <img src="{{invoice_url}}" style=" max-height: 700px; width: 1000px;">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div> 
+    <!-- Dark table -->
+    <div class="col-5 button" onclick="switch_divs(1);">Tabular Data</div>
+    <div class="button" onclick="switch_divs(2);">Non-Tabular Data</div>
+    <div class="content" id ="show_1">
+      <div class="row">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-white mb-0">Extracted Tabular Data</h3>
+            </div>
+            <form action="{{url_for('get_invoice_data')}}" method="POST">
+              <div class="table-responsive">
+                <table class="table align-items-center table-dark table-flush">
+                  <thead class="thead-dark">
+                  </thead>
+                  <tbody class="list">
+                    {% for value in data -%}
+                    <tr>
+                      {% set rowloop = loop %}
+                      {% for extracted_data in value -%}
+                      <td scope="row">
+                        <input type="text" value="{{extracted_data}}" name ="{{rowloop.index}}-{{loop.index}}" style="border-radius:8px; height: 50px;" >
+                        </td>
+                        {%- endfor %}
+                        <td class="text-right">
+                            <div class="dropdown">
+                              <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                              </a>
+                              <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                              </div>
+                            </div>
+                          </td>
+                      </tr>
+                        {%- endfor %}
+                  </tbody>
+                </table>
+                <br><br> 
+              <div class="col-11 text-right">
+                <br><br>
+                {% if downloadlink %}
+                <a href="{{downloadlink}}"><button class="btn btn-sm btn-primary" style="float: right; height: 50px; width: 150px;" value="Get Excel Sheet"></a>
+                {% endif %}  
+                <input type="submit" href="#!" class="btn btn-sm btn-primary" style="float: right; height: 50px; width: 150px;" value="Get Excel Sheet"></a>
+                  <input type="checkbox" id ="Inclusion" name="include_non_tabular_data" />
+                  <label for="Inclusion" style="color: white;">Include Non-Tabular Data in Excel Sheet</label>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+              <br><br><br>
+          </div>
+        </div>
+      </div>
+    </div>
+   </div> 
+    <div class="content hide" id ="show_2">
+      <div class="row">
+        <div class="col">
+          <div class="card bg-default shadow">
+            <div class="card-header bg-transparent border-0">
+              <h3 class="text-white mb-0">Extracted Non-Tabular Data</h3>
+            </div>
+              <div class="table-responsive">
+                <table class="table align-items-center table-dark table-flush">
+                  <thead class="thead-dark">
+                <div style="padding-left: 2%;">
+                  <textarea type="text" rows =20 style="width:95%;" name="Non_tabular_Data">{{non_tabular_data}}</textarea>
+                </div>
+                  </thead>
+                </table>
+                <br><br><div class="col-11 text-right">
+                  <br><br>
+                  {% if downloadlink %}
+                  <a href="{{downloadlink}}"><button class="btn btn-sm btn-primary" style="float: right; height: 50px; width: 150px;" value="Get Excel Sheet"></a>
+                  {% endif %}  
+                  <input type="submit" href="#!" class="btn btn-sm btn-primary" style="float: right; height: 50px; width: 150px;" value="Get Excel Sheet"></a>
+                    <input type="checkbox" id ="Inclusion" name="include_non_tabular_data" />
+                    <label for="Inclusion" style="color: white;">Include Non-Tabular Data in Excel Sheet</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                  </div>
+              <br><br><br>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+
+    {% include "includes/footer.html" %}
+
+  </div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}
