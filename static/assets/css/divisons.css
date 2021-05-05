@@ -1,0 +1,43 @@
+.button {
+    width: 50%;
+    height: 30px;
+    display: inline-block;
+    background-color: #172b4d;
+    margin: 0 10px 10px 0;
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    padding: 0%;
+  }
+  
+  .button:hover {
+    background-color:#5e72e4;
+  }
+  
+  .hide {
+    display: none;
+  }
+
+  .container {
+    height: 200px;
+    position: relative;
+    border: 3px solid green;
+  }
+  
+  .vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+
+  #loading {
+    width: 256px;
+    display: none;
+    background: url(/static/loader2.gif) no-repeat;
+    cursor: wait;
+    height: 600px;
+    margin-top: 70px;
+    }
