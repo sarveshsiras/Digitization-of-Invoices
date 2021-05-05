@@ -1,12 +1,11 @@
 import requests
-
+from urllib.request import urlopen
 
 def dispatch_request(addr,image_path):
         test_url = addr + '/predict'
-        my_img = {'image': open(image_path, 'rb')}
+        my_img = {'image': urlopen(image_path).read()}
         recv_response = requests.post(test_url, files=my_img)
         print(recv_response.text)
-        # convert server response into JSON format.
         print(recv_response.json())
         jsonResponse = recv_response.json()
         recv_dict = {}
@@ -21,4 +20,3 @@ def dispatch_request(addr,image_path):
 
         return tuple(list_of_coordinates)
 
-#print(dispatch_request("http://67dc558ba282.ngrok.io", "../input_imgs/invoice1.jpg"))
