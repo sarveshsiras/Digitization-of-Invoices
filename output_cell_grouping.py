@@ -56,28 +56,23 @@ def group_output(bounding_rects,image):
         cell_images_rows.append(cell_images_row)
     return cell_images_rows
 
-# Sort rows by average height of their center.
 def avg_height_of_center(row):
     centers = [y + h - h / 2 for x, y, w, h in row]
     return sum(centers) / len(centers)
 
 def preprocess_img(img):
     img = cv2.resize(img, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC)
-    # Convert to gray
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # Apply dilation and erosion to remove some noise
     kernel = np.ones((1, 1), np.uint8)
     img = cv2.dilate(img, kernel, iterations=1)
     img = cv2.erode(img, kernel, iterations=1)
     return img
 
 def get_text_data(img):
-    # return pytesseract.image_to_string(img, config="-c preserve_interword_spaces=1x1 --psm 4")
     img = preprocess_img(img)
     text = pytesseract.image_to_string(img, config="--psm 4")
     if text == '\x0c':
         text = pytesseract.image_to_string(img, config="--psm 6")
-        print(text)
     return text
 def process_text(cell_images_rows):
     result_data = []
